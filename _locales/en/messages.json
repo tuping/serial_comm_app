@@ -1,0 +1,43 @@
+{
+  "appName": {
+    "message": "Serial Comm",
+    "description": "Name of the app."
+  },
+  "appDescription": {
+    "message": "Bridge for javascript <-> serial communication.",
+    "description": "Description of the app."
+  },
+  "connectedTo": {
+    "message": "Connected to: "
+  },
+  "errorOnConnect": {
+    "message": "Error on connect to: "
+  },
+  "readLine": {
+    "message": "read line: "
+  },
+  "errorNotValidRequest": {
+    "message": "Error: not a valid request."
+  },
+  "notAvaialable": {
+    "message": "Not avaialable"
+  },
+  "choosePort": {
+    "message": "Choose port for device"
+   },
+  "chooseDeviceSettings": {
+    "message": "Choose device settings"
+   },
+  "choose": {
+    "message": "Choose"
+  },
+  "port": {
+    "message": "Port"
+  },
+  "bitrate": {
+    "message": "Bitrate"
+  },
+  "device": {
+    "message": "Device"
+  }
+}

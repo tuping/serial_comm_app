@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serial Comm Test</title>
+  </head>
+  <input type="hidden" id="serial-comm-app-id" value="lkoddbchmnmfkjdalnmahpgdonogpdee" />
+  <body>
+    <button
+      data-serial-comm="commandTest"
+      data-serial-comm-id="arduino"
+      data-serial-comm-path=""
+      data-serial-comm-name="Arduino UNO"
+    >Test</button>
+    <button data-serial-comm="commandWeight" data-serial-comm-id="scale">Weight</button>
+    <button data-serial-comm="changeDevice">Change device</button>
+    <textarea data-serial-comm="result" data-serial-comm-id="scale"></textarea>
+    <textarea data-serial-comm="result" data-serial-comm-id="arduino"></textarea>
+    <div id="buffer">
+    </div>
+  </body>
+</html>
+<script src="jquery-3.0.0.min.js"></script>
+<script src="test.js" charset="utf-8"></script>

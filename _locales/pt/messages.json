@@ -1,0 +1,43 @@
+{
+  "appName": {
+    "message": "Serial Comm",
+    "description": "Nome da app."
+  },
+  "appDescription": {
+    "message": "Ponte para comunicação javascript <-> serial.",
+    "description": "Descrição da app."
+  },
+  "connectedTo": {
+    "message": "Conectado em: "
+  },
+  "errorOnConnect": {
+    "message": "Erro ao conectar em: "
+  },
+  "readLine": {
+    "message": "linha lida: "
+  },
+  "errorNotValidRequest": {
+    "message": "Erro: não é uma requisição válida."
+  },
+  "notAvaialable": {
+    "message": "Indisponível"
+  },
+  "choosePort": {
+    "message": "Escolha a porta do dispositivo"
+   },
+  "chooseDeviceSettings": {
+    "message": "Escolha as configurações do dispositivo"
+   },
+  "choose": {
+    "message": "Escolha"
+  },
+  "port": {
+    "message": "Porta"
+  },
+  "bitrate": {
+    "message": "Bitrate"
+  },
+  "device": {
+    "message": "Dispositivo"
+  }
+}

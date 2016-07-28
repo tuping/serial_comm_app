@@ -1,0 +1,25 @@
+{
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDescription__",
+  "version": "0.1",
+  "author": "Rodrigo M. Albuquerque",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["js/serial_connection.js","js/serial_comm.js","js/choose_device_window.js","background.js"],
+      "persistent": false
+    }
+  },
+  "icons": { "16": "img/icon-16.png", "128": "img/icon-128.png" },
+  "externally_connectable": {
+    "matches": [
+      "*://localhost/*",
+      "*://127.0.0.1/*"
+    ],
+    "ids": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  "permissions": ["serial", "alwaysOnTopWindows"],
+  "default_locale": "en"
+}
