@@ -8,6 +8,7 @@ var inputDevice;
 var inputPort;
 var inputBitrate;
 var buttonOk;
+var buttonOtherPortSave;
 
 window.onload = function() {
   devices = serialCommDevices();
@@ -22,6 +23,8 @@ window.onload = function() {
   optionsForSelect(inputBitrate, bitrates, {default: defaultBitrate});
   buttonOk = document.getElementById("ok");
   buttonOk.onclick = chooseDevice;
+  buttonOtherPortSave = document.getElementById("otherPortSave");
+  buttonOtherPortSave.onclick = informOtherPort;
   i18n.translate();
 }
 
@@ -31,6 +34,16 @@ function chooseDevice() {
   var deviceBitrate = inputBitrate.options[inputBitrate.selectedIndex].value;
   setDevice(deviceId, devicePath, deviceBitrate);
   window.close();
+}
+
+function informOtherPort() {
+  var newPort = document.getElementById("otherPortPath").value.trim();
+  if (newPort && newPort != "") {
+    optionsForSelect(inputPort, [newPort]);
+  } else {
+    optionsForSelect(inputPort, ports, {textField: "path", valueField: "path"});
+  }
+  $("#otherPortModal").modal("hide");
 }
 
 function optionsForSelect(select, values, options = {}) {

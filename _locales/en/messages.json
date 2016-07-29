@@ -25,6 +25,9 @@
   "choosePort": {
     "message": "Choose port for device"
    },
+   "informPort": {
+    "message": "Inform device port"
+   },
   "chooseDeviceSettings": {
     "message": "Choose device settings"
    },
@@ -39,5 +42,17 @@
   },
   "device": {
     "message": "Device"
+  },
+  "otherPort": {
+    "message": "Other"
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "confirm": {
+    "message": "Confirm"
   }
 }

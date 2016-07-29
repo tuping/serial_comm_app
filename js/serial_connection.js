@@ -26,11 +26,20 @@
   };
 
   /* Converts a string to UTF-8 encoding in a Uint8Array; returns the array buffer. */
-  SerialConnection.prototype.str2ab = function(str) {
+  SerialConnection.prototype.strUtf2ab = function(str) {
     var encodedString = unescape(encodeURIComponent(str));
     var bytes = new Uint8Array(encodedString.length);
     for (var i = 0; i < encodedString.length; ++i) {
       bytes[i] = encodedString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
+  /* Copy a string to a Uint8Array; returns the array buffer. */
+  SerialConnection.prototype.strRaw2ab = function(str) {
+    var bytes = new Uint8Array(str.length);
+    for (var i = 0; i < str.length; ++i) {
+      bytes[i] = str.charCodeAt(i);
     }
     return bytes.buffer;
   };
@@ -79,7 +88,7 @@
     if (this.connectionId < 0) {
       throw "Invalid connection";
     }
-    serial.send(this.connectionId, this.str2ab(msg), function() {});
+    serial.send(this.connectionId, this.strRaw2ab(msg), function() {});
   };
 
   SerialConnection.prototype.sendByte = function(msg) {

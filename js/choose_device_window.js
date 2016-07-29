@@ -2,7 +2,7 @@
   "use strict";
 
   var chooseDeviceWindow = new function() {
-    this.width = 500;
+    this.width = 550;
     this.height = 300;
     this.w = (this.width > screen.width) ? screen.with : this.width;
     this.h = (this.height > screen.widh) ? screen.with : this.height;

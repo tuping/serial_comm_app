@@ -37,10 +37,7 @@
       serialComm.myMessagesPort = messagesPort;
       serialComm.myMessagesPort.onMessage.addListener(
         function(request) {
-          if(request.pesar) {
-            serialComm.pesar(request.deviceId);
-          }
-          else if (request.initialize) {
+          if (request.initialize) {
             serialComm.initialize();
           }
           else if (request.start) {

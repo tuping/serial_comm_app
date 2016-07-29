@@ -45,6 +45,11 @@ var collectDataFromDom = function() {
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, getWeight: true});
         });
         break;
+      case "commandPrint":
+        e[i].addEventListener("click", function(event) {
+          myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
+        });
+        break;
       case "changeDevice":
         e[i].addEventListener("click", function(event) {
           getDevices();
