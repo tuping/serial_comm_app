@@ -3,7 +3,7 @@
 
   var chooseDeviceWindow = new function() {
     this.width = 550;
-    this.height = 300;
+    this.height = 500;
     this.w = (this.width > screen.width) ? screen.with : this.width;
     this.h = (this.height > screen.widh) ? screen.with : this.height;
     this.show = function() {
@@ -35,7 +35,16 @@
               return serialComm.devices;
             };
             win.contentWindow.setDevice = function(deviceId, devicePath, bitrate) {
-              serialComm.deviceSet(deviceId, devicePath, bitrate);
+              serialComm.setDevice(deviceId, devicePath, bitrate);
+            };
+            win.contentWindow.unsetDevice = function(deviceId) {
+              serialComm.unsetDevice(deviceId);
+            };
+            win.contentWindow.saveDevices = function() {
+              serialComm.saveDevices;
+            };
+            win.contentWindow.loadDevices = function() {
+              serialComm.saveDevices;
             };
             win.outerBounds.setPosition(
               Math.round((screen.availWidth - win.outerBounds.width)/2), // left

@@ -8,10 +8,30 @@ var inputDevice;
 var inputPort;
 var inputBitrate;
 var buttonOk;
+var buttonSave;
 var buttonOtherPortSave;
+var dataSet;
 
 window.onload = function() {
-  devices = serialCommDevices();
+  reloadDataSet();
+  $("#dtDevices").DataTable({
+    data: dataSet,
+    columns: [
+      { title: chrome.i18n.getMessage("id") },
+      { title: chrome.i18n.getMessage("device") },
+      { title: chrome.i18n.getMessage("port") },
+      { title: chrome.i18n.getMessage("bitrate") }
+    ],
+    "scrollY": "200px",
+    "scrollCollapse": true,
+    "paging": false,
+    "searching": false,
+    "info": false,
+    language: {
+      "emptyTable": chrome.i18n.getMessage("emptyTable"),
+      "zeroRecords": chrome.i18n.getMessage("emptyTable")
+    }
+  });
   ports = serialCommPorts();
   bitrates = serialCommBitrates().bitrates;
   defaultBitrate = serialCommBitrates().defaultBitrate;
@@ -23,6 +43,8 @@ window.onload = function() {
   optionsForSelect(inputBitrate, bitrates, {default: defaultBitrate});
   buttonOk = document.getElementById("ok");
   buttonOk.onclick = chooseDevice;
+  buttonSave = document.getElementById("save");
+  buttonSave.onclick = saveConfig;
   buttonOtherPortSave = document.getElementById("otherPortSave");
   buttonOtherPortSave.onclick = informOtherPort;
   i18n.translate();
@@ -33,7 +55,31 @@ function chooseDevice() {
   var devicePath = inputPort.options[inputPort.selectedIndex].value;
   var deviceBitrate = inputBitrate.options[inputBitrate.selectedIndex].value;
   setDevice(deviceId, devicePath, deviceBitrate);
+  showCurrentDevices();
+}
+
+function saveConfig() {
+  saveDevices();
   window.close();
+}
+
+function loadConfig() {
+  loadDevices();
+  showCurrentDevices();
+}
+
+function showCurrentDevices() {
+  reloadDataSet();
+  $("#dtDevices").clear().rows.add(dataSet).draw();
+}
+
+function reloadDataSet() {
+  devices = serialCommDevices();
+  dataSet = $.map(devices, function(value, index) {
+    if(value.devicePath) {
+      return [[index, value.deviceName, value.devicePath, value.bitrate]];
+    }
+  });
 }
 
 function informOtherPort() {

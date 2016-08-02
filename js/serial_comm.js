@@ -17,6 +17,16 @@
     defaultBitrate: 9600,
     connections: {},
 
+    saveDevices: function() {
+      var stringfiedDevices = JSON.stringify(serialComm.devices);
+      window.localStorage.setItem('devices', stringfiedDevices);
+    },
+
+    loadDevices: function() {
+      var stringfiedDevices = window.localStorage.getItem('devices');
+      serialComm.devices = JSON.parse(stringfiedDevices);
+    },
+
     log: function(deviceId, msg) {
       if (logOn) {console.log(deviceId + " - " + msg)};
     },
@@ -118,7 +128,7 @@
       chooseDeviceWindow.show();
     },
 
-    deviceSet: function(deviceId, devicePath, bitrate) {
+    setDevice: function(deviceId, devicePath, bitrate) {
       var obj = serialComm.devices[deviceId];
       obj = {devicePath: devicePath, deviceName: obj.deviceName, bitrate: bitrate};
       serialComm.devices[deviceId] = obj;

@@ -31,6 +31,9 @@
   "chooseDeviceSettings": {
     "message": "Choose device settings"
    },
+  "chooseDevicesSettings": {
+    "message": "Choose devices settings"
+   },
   "choose": {
     "message": "Choose"
   },
@@ -54,5 +57,11 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "configuredDevices": {
+    "message": "Configured devices"
+  },
+  "emptyTable": {
+    "message": "No configured devices"
   }
 }
