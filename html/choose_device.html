@@ -17,7 +17,14 @@
   <body>
     <form class="form-horizontal">
       <div class="form-group">
-        <h4 class="text-center" data-i18n="chooseDevicesSettings">---</h4>
+        <div class="col-xs-9 col-xs-offset-1">
+          <h4 class="text-center" data-i18n="chooseDevicesSettings">---</h4>
+        </div>
+        <div class="col-xs-1">
+          <button id="refreshPorts" type="button" class="btn btn-link">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
       <div class="form-group">
         <label for="device" class="col-xs-2 col-xs-offset-1 control-label" data-i18n="device" data-i18n-sufix=": ">---</label>
@@ -36,31 +43,35 @@
         </div>
         <div class="col-xs-2">
           <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#otherPortModal" data-i18n="otherPort">---</button>
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#otherPortModal">
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
       <div class="form-group">
         <label for="bitrate" class="col-xs-2 col-xs-offset-1 control-label" data-i18n="bitrate" data-i18n-sufix=": ">---</label>
-        <div class="col-xs-8">
+        <div class="col-xs-6">
           <select class="form-control" id="bitrate">
             <option>---</option>
           </select>
         </div>
+        <div class="col-xs-2">
+          <button type="button" class="btn btn-primary" id="ok">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="col-xs-10 col-xs-offset-1">
+        <table id="dtDevices" class="table table-condensed table-hover table-bordered" cellspacing="0" width="100%">
+          <caption data-i18n="configuredDevices"></caption>
+        </table>
       </div>
       <div class="form-group">
-        <div class="col-xs-3 col-xs-offset-2" text-align="center">
-          <button type="button" class="btn btn-primary btn-block" id="ok" data-i18n="ok">--</button>
-        </div>
-        <div class="col-xs-3 col-xs-offset-1" text-align="center">
+        <div class="col-xs-4 col-xs-offset-4" text-align="center">
           <button type="button" class="btn btn-primary btn-block" id="save" data-i18n="confirm">--</button>
         </div>
       </div>
     </form>
-    <div class="col-xs-10 col-xs-offset-1">
-      <table id="dtDevices" class="table table-condensed table-hover table-bordered" cellspacing="0" width="100%">
-        <caption data-i18n="configuredDevices"></caption>
-      </table>
-    </div>
     <!-- Modal -->
     <div class="modal fade" id="otherPortModal" tabindex="-1" role="dialog" aria-labelledby="otherPortModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">

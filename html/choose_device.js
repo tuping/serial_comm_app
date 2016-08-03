@@ -10,6 +10,7 @@ var inputBitrate;
 var buttonOk;
 var buttonSave;
 var buttonOtherPortSave;
+var buttonRefreshPorts;
 var dataSet;
 
 window.onload = function() {
@@ -32,14 +33,12 @@ window.onload = function() {
       "zeroRecords": chrome.i18n.getMessage("emptyTable")
     }
   });
-  ports = serialCommPorts();
+  loadPorts();
   bitrates = serialCommBitrates().bitrates;
   defaultBitrate = serialCommBitrates().defaultBitrate;
   inputDevice = document.getElementById("device");
-  inputPort = document.getElementById("port");
   inputBitrate = document.getElementById("bitrate");
   optionsForSelect(inputDevice, devices, {textField: "deviceName"});
-  optionsForSelect(inputPort, ports, {textField: "path", valueField: "path"});
   optionsForSelect(inputBitrate, bitrates, {default: defaultBitrate});
   buttonOk = document.getElementById("ok");
   buttonOk.onclick = chooseDevice;
@@ -47,7 +46,20 @@ window.onload = function() {
   buttonSave.onclick = saveConfig;
   buttonOtherPortSave = document.getElementById("otherPortSave");
   buttonOtherPortSave.onclick = informOtherPort;
+  buttonRefreshPorts = document.getElementById("refreshPorts");
+  buttonRefreshPorts.onclick = refreshPorts;
   i18n.translate();
+}
+
+function refreshPorts() {
+  buttonRefreshPorts.blur();
+  getDevices(loadPorts);
+}
+
+function loadPorts() {
+  inputPort = document.getElementById("port");
+  ports = serialCommPorts();
+  optionsForSelect(inputPort, ports, {textField: "path", valueField: "path"});
 }
 
 function chooseDevice() {
@@ -70,7 +82,7 @@ function loadConfig() {
 
 function showCurrentDevices() {
   reloadDataSet();
-  $("#dtDevices").clear().rows.add(dataSet).draw();
+  $("#dtDevices").DataTable().clear().rows.add(dataSet).draw();
 }
 
 function reloadDataSet() {

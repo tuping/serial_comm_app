@@ -63,5 +63,8 @@
   },
   "emptyTable": {
     "message": "No configured devices"
+  },
+  "id": {
+    "message": "Id"
   }
 }

@@ -34,6 +34,9 @@
             win.contentWindow.serialCommDevices = function() {
               return serialComm.devices;
             };
+            win.contentWindow.getDevices = function(callback) {
+              serialComm.getDevices(callback);
+            };
             win.contentWindow.setDevice = function(deviceId, devicePath, bitrate) {
               serialComm.setDevice(deviceId, devicePath, bitrate);
             };

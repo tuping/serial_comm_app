@@ -16,6 +16,7 @@
     bitrates: allowedBitrates,
     defaultBitrate: 9600,
     connections: {},
+    onGetDeviceReturn: new chrome.Event(),
 
     saveDevices: function() {
       var stringfiedDevices = JSON.stringify(serialComm.devices);
@@ -66,11 +67,17 @@
       );
     },
 
-    getDevices: function(deviceId) {
+    getDevices: function(callback) {
       for(var cwl in serialComm.clientWantsLine) {
         serialComm.clientWantsLine[cwl] = false;
       }
-      serial.getDevices(serialComm.onGetDevices);
+      if(callback) {
+        serialComm.onGetDeviceReturn.addListener(callback);
+        serial.getDevices(serialComm.onGetDevicesWithCallback);
+      }
+      else {
+        serial.getDevices(serialComm.onGetDevices);
+      }
     },
 
     initialize: function() {
@@ -126,6 +133,11 @@
     onGetDevices: function(devicePorts) {
       serialComm.availablePorts = devicePorts
       chooseDeviceWindow.show();
+    },
+
+    onGetDevicesWithCallback: function(devicePorts) {
+      serialComm.availablePorts = devicePorts
+      serialComm.onGetDeviceReturn.dispatch();
     },
 
     setDevice: function(deviceId, devicePath, bitrate) {
