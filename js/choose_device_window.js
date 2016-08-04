@@ -44,10 +44,7 @@
               serialComm.unsetDevice(deviceId);
             };
             win.contentWindow.saveDevices = function() {
-              serialComm.saveDevices;
-            };
-            win.contentWindow.loadDevices = function() {
-              serialComm.saveDevices;
+              serialComm.saveDevices();
             };
             win.outerBounds.setPosition(
               Math.round((screen.availWidth - win.outerBounds.width)/2), // left

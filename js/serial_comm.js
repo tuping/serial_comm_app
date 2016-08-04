@@ -7,6 +7,7 @@
   const ETX = 0x03;
   const allowedBitrates = [110, 300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200];
   const logOn = true;
+  const storageKey = "serial-comm-devices"
 
   var serialComm = {
     myMessagesPort: undefined,
@@ -20,12 +21,10 @@
 
     saveDevices: function() {
       var stringfiedDevices = JSON.stringify(serialComm.devices);
-      window.localStorage.setItem('devices', stringfiedDevices);
-    },
-
-    loadDevices: function() {
-      var stringfiedDevices = window.localStorage.getItem('devices');
-      serialComm.devices = JSON.parse(stringfiedDevices);
+      var obj = {};
+      obj[storageKey] = stringfiedDevices;
+      chrome.storage.local.clear();
+      chrome.storage.local.set(obj);
     },
 
     log: function(deviceId, msg) {
@@ -72,7 +71,9 @@
         serialComm.clientWantsLine[cwl] = false;
       }
       if(callback) {
-        serialComm.onGetDeviceReturn.addListener(callback);
+        if(!serialComm.onGetDeviceReturn.hasListener(callback)) {
+          serialComm.onGetDeviceReturn.addListener(callback);
+        }
         serial.getDevices(serialComm.onGetDevicesWithCallback);
       }
       else {
@@ -82,6 +83,14 @@
 
     initialize: function() {
       serialComm.devices = {};
+      chrome.storage.local.get(storageKey,
+        function(item) {
+          var stringfiedDevices = item[storageKey];
+          if (stringfiedDevices) {
+            serialComm.devices = JSON.parse(stringfiedDevices);
+          }
+        }
+      );
     },
 
     start: function(deviceId, devicePath, deviceName, bitrate = serialComm.defaultBitrate) {

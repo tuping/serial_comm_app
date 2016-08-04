@@ -20,6 +20,6 @@
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     ]
   },
-  "permissions": ["serial", "alwaysOnTopWindows"],
+  "permissions": ["serial", "alwaysOnTopWindows", "storage"],
   "default_locale": "en"
 }

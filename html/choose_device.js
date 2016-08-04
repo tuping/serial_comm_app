@@ -18,10 +18,9 @@ window.onload = function() {
   $("#dtDevices").DataTable({
     data: dataSet,
     columns: [
-      { title: chrome.i18n.getMessage("id") },
-      { title: chrome.i18n.getMessage("device") },
-      { title: chrome.i18n.getMessage("port") },
-      { title: chrome.i18n.getMessage("bitrate") }
+      { title: chrome.i18n.getMessage("device"), defaultContent: "" },
+      { title: chrome.i18n.getMessage("port"), defaultContent: "" },
+      { title: chrome.i18n.getMessage("bitrate"), defaultContent: "" }
     ],
     "scrollY": "200px",
     "scrollCollapse": true,
@@ -49,6 +48,7 @@ window.onload = function() {
   buttonRefreshPorts = document.getElementById("refreshPorts");
   buttonRefreshPorts.onclick = refreshPorts;
   i18n.translate();
+  showCurrentDevices();
 }
 
 function refreshPorts() {
@@ -75,11 +75,6 @@ function saveConfig() {
   window.close();
 }
 
-function loadConfig() {
-  loadDevices();
-  showCurrentDevices();
-}
-
 function showCurrentDevices() {
   reloadDataSet();
   $("#dtDevices").DataTable().clear().rows.add(dataSet).draw();
@@ -89,7 +84,7 @@ function reloadDataSet() {
   devices = serialCommDevices();
   dataSet = $.map(devices, function(value, index) {
     if(value.devicePath) {
-      return [[index, value.deviceName, value.devicePath, value.bitrate]];
+      return [[value.deviceName ? value.deviceName : index, value.devicePath, value.bitrate]];
     }
   });
 }
