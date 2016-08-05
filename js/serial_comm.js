@@ -14,6 +14,7 @@
     clientWantsLine: {},
     devices: {},
     availablePorts: [],
+    additionalPorts: [],
     bitrates: allowedBitrates,
     defaultBitrate: 9600,
     connections: {},
@@ -48,10 +49,10 @@
       serialComm.myMessagesPort.onMessage.addListener(
         function(request) {
           if (request.initialize) {
-            serialComm.initialize();
+            serialComm.initialize(request.devices, request.additionalPorts);
           }
           else if (request.start) {
-            serialComm.start(request.deviceId, request.devicePath, request.deviceName);
+            serialComm.start(request.deviceId, request.deviceType, request.devicePath, request.deviceName, request.bitrate);
           }
           else if (request.getDevices) {
             serialComm.getDevices();
@@ -81,24 +82,61 @@
       }
     },
 
-    initialize: function() {
+    initialize: function(devices, additionalPorts) {
       serialComm.devices = {};
+      if (additionalPorts) {
+        try {
+          var addPorts = JSON.parse("[" + additionalPorts + "]");
+          serialComm.additionalPorts = addPorts.map(function(value, index) {
+            return {displayName: value, path: value};
+          });
+        }
+        catch(e) {
+          serialComm.additionalPorts = [];
+        }
+      }
       chrome.storage.local.get(storageKey,
         function(item) {
           var stringfiedDevices = item[storageKey];
           if (stringfiedDevices) {
-            serialComm.devices = JSON.parse(stringfiedDevices);
+            serialComm.devices = serialComm.mergeDeviceConfig(devices, JSON.parse(stringfiedDevices));
+            serialComm.startDevices();
           }
         }
       );
     },
 
-    start: function(deviceId, devicePath, deviceName, bitrate = serialComm.defaultBitrate) {
-      serialComm.devices[deviceId] = {devicePath: devicePath, deviceName: deviceName, bitrate: bitrate};
+    mergeDeviceConfig: function(devices, devicesConfig) {
+      var merged = {}
+      for (var d in devices) {
+        merged[d] = devices[d];
+        if(devicesConfig[d]) {
+          merged[d].devicePath = devicesConfig[d].devicePath || devices[d].devicePath;
+          merged[d].bitrate = devicesConfig[d].bitrate || devices[d].bitrate;
+        }
+      }
+      return merged;
+    },
+
+    startDevices: function() {
+      for (var d in serialComm.devices) {
+        if (serialComm.devices[d].devicePath) {
+          serialComm.start(d, d.deviceType, d.devicePath, d.deviceName, d.bitrate);
+        }
+      }
+    },
+
+    start: function(deviceId, deviceType, devicePath, deviceName, bitrate) {
+      serialComm.devices[deviceId] = {
+        deviceType: deviceType,
+        devicePath: devicePath,
+        deviceName: deviceName,
+        bitrate: bitrate
+      };
 
       //if (serialComm.connections[deviceId] == undefined) {
         var lineTerminator;
-        switch (deviceId) {
+        switch (deviceType) {
           case "arduino":
             lineTerminator = "\n";
             break;
@@ -131,7 +169,7 @@
 
       if (devicePath) {
         try {
-          serialComm.connections[deviceId].connect(devicePath, {bitrate: bitrate});
+          serialComm.connections[deviceId].connect(devicePath, {bitrate: parseInt(bitrate)});
         }
         catch(e) {
           throw e;
@@ -140,22 +178,26 @@
     },
 
     onGetDevices: function(devicePorts) {
-      serialComm.availablePorts = devicePorts
+      serialComm.availablePorts = devicePorts.concat(serialComm.additionalPorts);
       chooseDeviceWindow.show();
     },
 
     onGetDevicesWithCallback: function(devicePorts) {
-      serialComm.availablePorts = devicePorts
+      serialComm.availablePorts = devicePorts.concat(serialComm.additionalPorts);
       serialComm.onGetDeviceReturn.dispatch();
     },
 
     setDevice: function(deviceId, devicePath, bitrate) {
       var obj = serialComm.devices[deviceId];
-      obj = {devicePath: devicePath, deviceName: obj.deviceName, bitrate: bitrate};
+      obj = {deviceType: obj.deviceType, devicePath: devicePath, deviceName: obj.deviceName, bitrate: bitrate};
       serialComm.devices[deviceId] = obj;
-      serialComm.myMessagesPort.postMessage(
-        {deviceId: deviceId, deviceSet: true, devicePath: devicePath, bitrate: bitrate}
-      );
+      serialComm.myMessagesPort.postMessage({
+        deviceId: deviceId,
+        deviceSet: true,
+        deviceType: obj.deviceType,
+        devicePath: devicePath,
+        bitrate: bitrate
+      });
     },
 
     getWeight: function(deviceId) {

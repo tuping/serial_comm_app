@@ -15,15 +15,21 @@ var messages = {
 var detected = false;
 var is_on = false;
 var myMessagesPort;
-var myDevices = {}; // hash with deviceId => {devicePath, deviceName}
+var myDevices = {}; // hash with deviceId => {deviceType, devicePath, deviceName}
+var myAdditionalPorts;
 
 var collectDataFromDom = function() {
   //get app id
-  appId = document.querySelector("#serial-comm-app-id").value;
+  appId = document.querySelector("[data-serial-comm-app-id]").dataset.serialCommAppId;
+
+  //get additional ports
+  myAdditionalPorts = document.querySelector("[data-serial-comm-additional-ports]").dataset.serialCommAdditionalPorts;
+
   // set up hash with devices ids, disable all commands
   var e = document.querySelectorAll("[data-serial-comm-id]");
   for(var i = 0; i < e.length; ++i) {
     myDevices[e[i].dataset.serialCommId]={
+      deviceType: e[i].dataset.serialCommType || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceType),
       devicePath: e[i].dataset.serialCommPath || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].devicePath),
       deviceName: e[i].dataset.serialCommName || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceName)
     }
@@ -61,7 +67,9 @@ var collectDataFromDom = function() {
 
 var initialize = function() {
   myMessagesPort.postMessage({
-    initialize: true
+    initialize: true,
+    devices: myDevices,
+    additionalPorts: myAdditionalPorts
   });
 }
 
@@ -97,6 +105,7 @@ var processMessages = function(request) {
     if (request.devicePath) {
       var obj = myDevices[request.deviceId];
       obj.devicePath = request.devicePath;
+      obj.bitrate = request.bitrate;
       myDevices[request.deviceId] = obj;
       startDevice(request.deviceId);
     }
@@ -138,7 +147,7 @@ var detect = function() {
           console.log(response);
           detected = true;
           addListeners();
-          startApp();
+          initialize();
         }
         else {
           alert(messages.notFoundPleaseInstall);
@@ -156,16 +165,11 @@ var startDevice = function(deviceId) {
   myMessagesPort.postMessage({
     start: true,
     deviceId: deviceId,
+    deviceType: myDevices[deviceId].deviceType,
     devicePath: myDevices[deviceId].devicePath,
-    deviceName: myDevices[deviceId].deviceName
+    deviceName: myDevices[deviceId].deviceName,
+    bitrate: myDevices[deviceId].bitrate
   });
-}
-
-var startApp = function() {
-  initialize();
-  for (var d in myDevices) {
-    startDevice(d)
-  }
 }
 
 var getDevices = function() {

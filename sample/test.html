@@ -3,18 +3,24 @@
   <head>
     <title>Serial Comm Test</title>
   </head>
-  <input type="hidden" id="serial-comm-app-id" value="lkoddbchmnmfkjdalnmahpgdonogpdee" />
+  <input type="hidden" data-serial-comm-app-id="lkoddbchmnmfkjdalnmahpgdonogpdee" />
+  <input type="hidden" data-serial-comm-additional-ports='"/dev/virtualcom0","/dev/virtualcom1"' />
   <body>
     <button
       data-serial-comm="commandTest"
-      data-serial-comm-id="arduino"
+      data-serial-comm-id="arduino1"
+      data-serial-comm-type="arduino"
       data-serial-comm-path=""
       data-serial-comm-name="Arduino UNO"
     >Test</button>
-    <button data-serial-comm="commandWeight" data-serial-comm-id="scale">Weight</button>
+    <button
+      data-serial-comm="commandWeight"
+      data-serial-comm-id="scale1"
+      data-serial-comm-type="scale"
+    >Weight</button>
     <button data-serial-comm="changeDevice">Change device</button>
-    <textarea data-serial-comm="result" data-serial-comm-id="scale"></textarea>
-    <textarea data-serial-comm="result" data-serial-comm-id="arduino"></textarea>
+    <textarea data-serial-comm="result" data-serial-comm-id="scale1"></textarea>
+    <textarea data-serial-comm="result" data-serial-comm-id="arduino1"></textarea>
     <div id="buffer">
     </div><br/>
     <textarea id="printerdata"  style="width: 300px; height: 150px;">
@@ -62,8 +68,40 @@ LO564,492,180,4
 LO564,240,5,303
 P1
     </textarea>
-    <button data-serial-comm="commandPrint" data-serial-comm-id="printer" data-serial-comm-datafield-id="printerdata">Print</button>
+    <button
+      data-serial-comm="commandPrint"
+      data-serial-comm-id="eplprinter"
+      data-serial-comm-type="printer"
+      data-serial-comm-datafield-id="printerdata"
+      id="bacalhau"
+    >Epl Printer
+    </button>
+    <textarea id="printerconfig">
+Y19,N,8,1
+Y96,N,8,1
+    </textarea>
+    <button
+      data-serial-comm="commandPrint"
+      data-serial-comm-id="eplprinterconfig"
+      data-serial-comm-type="printer"
+      data-serial-comm-datafield-id="printerconfig"
+    >EPL Printer Config
+    </button>
+    <textarea id="printerzebra">
+^XA^LH 100,100
+^FO20,10^ADN,20,40^FDWikipedia^FS
+^LH0,0
+^XZ
+    </textarea>
+    <button
+      data-serial-comm="commandPrint"
+      data-serial-comm-id="zplprinter"
+      data-serial-comm-type="printer"
+      data-serial-comm-datafield-id="printerzebra"
+    >ZPL Printer
+    </button>
   </body>
 </html>
 <script src="jquery-3.0.0.min.js"></script>
 <script src="test.js" charset="utf-8"></script>
+<script src="bacalhau.js"></script>
