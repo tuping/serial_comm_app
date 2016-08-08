@@ -8,6 +8,7 @@
     this.lineBuffer = "";
     this.boundOnReceive = this.onReceive.bind(this);
     this.boundOnReceiveError = this.onReceiveError.bind(this);
+    this.boundOnSend = this.onSend.bind(this);
     this.onConnect = new chrome.Event();
     this.onReadLine = new chrome.Event();
     this.onError = new chrome.Event();
@@ -84,18 +85,26 @@
     serial.connect(path, options, this.onConnectComplete.bind(this));
   };
 
+  SerialConnection.prototype.onSend = function(sendInfo) {
+    console.log("Send info for connectionId=" + this.connectionId.toString() + ":");
+    console.log(sendInfo);
+  }
+
   SerialConnection.prototype.sendString = function(msg) {
-    if (this.connectionId < 0) {
-      throw "Invalid connection";
+    try {
+      this.sendArrayBuffer(this.strRaw2ab(msg));
+      //serial.send(this.connectionId, this.strRaw2ab(msg), this.boundOnSend);
     }
-    serial.send(this.connectionId, this.strRaw2ab(msg), function() {});
+    catch(e) {
+      throw(e);
+    }
   };
 
-  SerialConnection.prototype.sendByte = function(msg) {
+  SerialConnection.prototype.sendArrayBuffer = function(msg) {
     if (this.connectionId < 0) {
       throw "Invalid connection";
     }
-    serial.send(this.connectionId, msg, function() {});
+    serial.send(this.connectionId, msg, this.boundOnSend);
   };
 
   SerialConnection.prototype.disconnect = function() {

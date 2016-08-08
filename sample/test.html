@@ -23,7 +23,7 @@
     <textarea data-serial-comm="result" data-serial-comm-id="arduino1"></textarea>
     <div id="buffer">
     </div><br/>
-    <textarea id="printerdata"  style="width: 300px; height: 150px;">
+    <textarea id="printerdata" style="width: 300px; height: 150px;">
 N
 N
 N
@@ -73,7 +73,6 @@ P1
       data-serial-comm-id="eplprinter"
       data-serial-comm-type="printer"
       data-serial-comm-datafield-id="printerdata"
-      id="bacalhau"
     >Epl Printer
     </button>
     <textarea id="printerconfig">
@@ -85,11 +84,12 @@ Y96,N,8,1
       data-serial-comm-id="eplprinterconfig"
       data-serial-comm-type="printer"
       data-serial-comm-datafield-id="printerconfig"
+      data-serial-comm-force-reconnect
     >EPL Printer Config
     </button>
-    <textarea id="printerzebra">
+    <textarea id="printerzebra" style="width: 300px; height: 150px;">>
 ^XA^LH 100,100
-^FO20,10^ADN,20,40^FDWikipedia^FS
+^FO20,10^ADN,20,40^FD10081234567890^FS
 ^LH0,0
 ^XZ
     </textarea>

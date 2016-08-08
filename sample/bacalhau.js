@@ -1,17 +1,24 @@
 "use strict";
 
+$(function() {
 
-var txtArea = document.querySelector("#printerdata");
-var buttonPrint = document.querySelector("#bacalhau");
-var codigo = "10081234567890";
+  //var txtArea = document.querySelector("#printerdata");
+  var buttonPrint = $("button[data-serial-comm=commandPrint]");
+  var codigo = "10081234567890";
 
-function novoBacalhau() {
-  var texto = txtArea.value;
-  var n = texto.search(codigo);
-  var n_codigo = (parseInt(codigo)+1).toString();
-  texto = texto.substr(0,n) + n_codigo + texto.substr(n+codigo.length);
-  codigo = n_codigo;
-  txtArea.value = texto;
-}
+  function novoBacalhau(event) {
+    var txtAreaId = event.target.dataset.serialCommDatafieldId;
+    var txtArea = $("#"+txtAreaId);
+    var texto = txtArea.text();
+    var n = texto.search(codigo);
+    if (n) {
+      var n_codigo = (parseInt(codigo)+1).toString();
+      texto = texto.substr(0,n) + n_codigo + texto.substr(n+codigo.length);
+      codigo = n_codigo;
+      //txtArea.value = texto;
+      txtArea.text(texto);
+    }
+  }
 
-buttonPrint.addEventListener("click", novoBacalhau);
+  buttonPrint.click(novoBacalhau);
+});

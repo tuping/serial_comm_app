@@ -41,7 +41,7 @@
       var buf = new Uint8Array(1);
       buf[0] = request;
       serialComm.clientWantsLine[deviceId] = true;
-      serialComm.connections[deviceId].sendByte(buf.buffer);
+      serialComm.connections[deviceId].sendArrayBuffer(buf.buffer);
     },
 
     addListeners: function(messagesPort) {

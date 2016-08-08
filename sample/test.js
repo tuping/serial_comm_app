@@ -54,6 +54,9 @@ var collectDataFromDom = function() {
       case "commandPrint":
         e[i].addEventListener("click", function(event) {
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
+          if(event.target.dataset.serialCommForceReconnect) {
+            myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, reconnect: true});
+          }
         });
         break;
       case "changeDevice":
