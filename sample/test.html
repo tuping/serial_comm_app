@@ -6,20 +6,28 @@
   <input type="hidden" data-serial-comm-app-id="lkoddbchmnmfkjdalnmahpgdonogpdee" />
   <input type="hidden" data-serial-comm-additional-ports='"/dev/virtualcom0","/dev/virtualcom1"' />
   <body>
+    <button data-serial-comm="configDevices">Config devices</button>
+    <button data-serial-comm="restartDevices">Restart devices</button>
     <button
       data-serial-comm="commandTest"
       data-serial-comm-id="arduino1"
       data-serial-comm-type="arduino"
       data-serial-comm-path=""
       data-serial-comm-name="Arduino UNO"
+      data-serial-comm-disable-on-error="true"
     >Test</button>
     <button
       data-serial-comm="commandWeight"
       data-serial-comm-id="scale1"
       data-serial-comm-type="scale"
+      data-serial-comm-reconnect-on-error="true"
     >Weight</button>
-    <button data-serial-comm="changeDevice">Change device</button>
-    <textarea data-serial-comm="result" data-serial-comm-id="scale1"></textarea>
+    <textarea
+      data-serial-comm="result"
+      data-serial-comm-id="scale1"
+      data-serial-comm-display-error="true"
+      data-serial-comm-disable-on-error="true"
+    ></textarea>
     <textarea data-serial-comm="result" data-serial-comm-id="arduino1"></textarea>
     <div id="buffer">
     </div><br/>

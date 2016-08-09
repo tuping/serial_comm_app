@@ -66,5 +66,14 @@
   },
   "id": {
     "message": "Id"
+  },
+  "error": {
+    "message": "Error: "
+  },
+  "invalidConnection": {
+    "message": "Invalid connection."
+  },
+  "resendMaxTriesExceeded" : {
+    "message": "Resend: max send tries exceeded."
   }
 }

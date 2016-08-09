@@ -9,7 +9,8 @@ var messages = {
   notFoundPleaseInstall: "Por favor instale o aplicativo Serial Comm para Google Chrome.",
   deviceNotFound: "Dispositivo serial não foi encontrado.",
   chromeApiNotAvaialable: "API do Chrome indisponível. Favor utilizar o navegador Google Chrome.",
-  disconnectedMessagePort: "Erro na comunicação com a extensão. Recarregue a página." //"Error: Attempting to use a disconnected port object"
+  disconnectedMessagePort: "Erro na comunicação com a extensão. Recarregue a página.", //"Error: Attempting to use a disconnected port object"
+  disableSerialInterfaceError: "Erro no dispositivo: "
 }
 
 var detected = false;
@@ -43,25 +44,32 @@ var collectDataFromDom = function() {
     switch(e[i].dataset.serialComm) {
       case "commandTest":
         e[i].addEventListener("click", function(event) {
+          showDeviceMessage(event.target.dataset.serialCommId,"");
           is_on = !is_on;
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: (is_on ? "y" : "n")});
         });
-        break;
+      break;
       case "commandWeight":
         e[i].addEventListener("click", function(event) {
+          showDeviceMessage(event.target.dataset.serialCommId,"");
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, getWeight: true});
         });
-        break;
+      break;
       case "commandPrint":
         e[i].addEventListener("click", function(event) {
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
         });
         break;
-      case "changeDevice":
+      case "configDevices":
         e[i].addEventListener("click", function(event) {
-          getDevices();
+          configDevices();
         });
-        break;
+      break;
+      case "restartDevices":
+        e[i].addEventListener("click", function(event) {
+          restartDevices();
+        });
+      break;
     }
   }
 }
@@ -81,6 +89,15 @@ var disableSerialInterface = function(deviceId) {
     if(e[i].dataset.serialCommDisableOnError) {
       e[i].disabled = true;
     }
+    //check for display error
+    if(e[i].dataset.serialCommDisplayError) {
+      try {
+        e[i].value = messages.disableSerialInterfaceError + deviceId;
+      }
+      catch(error) {
+        e[i].innerHTML = messages.disableSerialInterfaceError + deviceId;
+      }
+    }
   }
 }
 
@@ -89,6 +106,7 @@ var enableSerialInterface = function(deviceId) {
   for(var i = 0; i < e.length; ++i) {
     e[i].disabled = false;
   }
+  showDeviceMessage(deviceId,"");
 }
 
 var addListeners = function() {
@@ -118,14 +136,23 @@ var processMessages = function(request) {
     }
   }
   else if (request.readLine) {
+    enableSerialInterface(request.deviceId);
     showDeviceMessage(request.deviceId, request.message);
+  }
+  else if (request.error) {
+    disableSerialInterface(request.deviceId);
   }
 }
 
 var showDeviceMessage = function(deviceId, message) {
   var e = document.querySelectorAll("[data-serial-comm=result][data-serial-comm-id=" + deviceId + "]");
   for(var i = 0; i < e.length; ++i) {
-    e[i].innerHTML = message;
+    try {
+      e[i].value = message;
+    }
+    catch(error) {
+      e[i].innerHTML = message;
+    }
   }
 }
 
@@ -177,9 +204,18 @@ var startDevice = function(deviceId) {
   });
 }
 
-var getDevices = function() {
+var restartDevices = function() {
   try {
-    myMessagesPort.postMessage({getDevices: true});
+    myMessagesPort.postMessage({restartDevices: true});
+  }
+  catch (e) {
+    detect(appId);
+  }
+}
+
+var configDevices = function() {
+  try {
+    myMessagesPort.postMessage({configDevices: true});
   }
   catch (e) {
     detect(appId);
