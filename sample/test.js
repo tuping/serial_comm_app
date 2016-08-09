@@ -77,7 +77,10 @@ var initialize = function() {
 var disableSerialInterface = function(deviceId) {
   var e = document.querySelectorAll("[data-serial-comm-id=" + deviceId + "]");
   for(var i = 0; i < e.length; ++i) {
-    e[i].disabled = true;
+    //check for disable on error
+    if(e[i].dataset.serialCommDisableOnError) {
+      e[i].disabled = true;
+    }
   }
 }
 
