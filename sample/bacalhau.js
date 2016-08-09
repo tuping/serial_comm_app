@@ -9,14 +9,13 @@ $(function() {
   function novoBacalhau(event) {
     var txtAreaId = event.target.dataset.serialCommDatafieldId;
     var txtArea = $("#"+txtAreaId);
-    var texto = txtArea.text();
+    var texto = txtArea.val();
     var n = texto.search(codigo);
     if (n) {
       var n_codigo = (parseInt(codigo)+1).toString();
       texto = texto.substr(0,n) + n_codigo + texto.substr(n+codigo.length);
       codigo = n_codigo;
-      //txtArea.value = texto;
-      txtArea.text(texto);
+      txtArea.val(texto);
     }
   }
 

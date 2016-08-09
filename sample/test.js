@@ -31,7 +31,8 @@ var collectDataFromDom = function() {
     myDevices[e[i].dataset.serialCommId]={
       deviceType: e[i].dataset.serialCommType || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceType),
       devicePath: e[i].dataset.serialCommPath || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].devicePath),
-      deviceName: e[i].dataset.serialCommName || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceName)
+      deviceName: e[i].dataset.serialCommName || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceName),
+      reconnectOnError: e[i].dataset.serialCommReconnectOnError || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].reconnectOnError)
     }
     e[i].disabled = true;
   }
@@ -54,9 +55,6 @@ var collectDataFromDom = function() {
       case "commandPrint":
         e[i].addEventListener("click", function(event) {
           myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
-          if(event.target.dataset.serialCommForceReconnect) {
-            myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, reconnect: true});
-          }
         });
         break;
       case "changeDevice":
@@ -171,7 +169,8 @@ var startDevice = function(deviceId) {
     deviceType: myDevices[deviceId].deviceType,
     devicePath: myDevices[deviceId].devicePath,
     deviceName: myDevices[deviceId].deviceName,
-    bitrate: myDevices[deviceId].bitrate
+    bitrate: myDevices[deviceId].bitrate,
+    reconnectOnError: myDevices[deviceId].reconnectOnError
   });
 }
 

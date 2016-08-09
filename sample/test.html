@@ -84,20 +84,18 @@ Y96,N,8,1
       data-serial-comm-id="eplprinterconfig"
       data-serial-comm-type="printer"
       data-serial-comm-datafield-id="printerconfig"
-      data-serial-comm-force-reconnect
     >EPL Printer Config
     </button>
-    <textarea id="printerzebra" style="width: 300px; height: 150px;">>
-^XA^LH 100,100
+    <textarea id="printerzebra" style="width: 300px; height: 150px;">^XA^LH 100,100
 ^FO20,10^ADN,20,40^FD10081234567890^FS
 ^LH0,0
-^XZ
-    </textarea>
+^XZ</textarea>
     <button
       data-serial-comm="commandPrint"
       data-serial-comm-id="zplprinter"
       data-serial-comm-type="printer"
       data-serial-comm-datafield-id="printerzebra"
+      data-serial-comm-reconnect-on-error="true"
     >ZPL Printer
     </button>
   </body>

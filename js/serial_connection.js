@@ -1,8 +1,9 @@
 //(function(window, undefined) {
   "use strict";
   const serial = chrome.serial;
+  const MAX_SEND_TRIES = 3;
 
-  function SerialConnection(deviceId, lineTerminator = "\n") {
+  function SerialConnection(deviceId, lineTerminator = "\n", reconnectOnError = false) {
     this.deviceId = deviceId;
     this.connectionId = -1;
     this.lineBuffer = "";
@@ -13,6 +14,9 @@
     this.onReadLine = new chrome.Event();
     this.onError = new chrome.Event();
     this.lineTerminator = lineTerminator;
+    this.reconnectOnError = reconnectOnError;
+    this.sendTries = 0;
+    this.lastMessage = undefined;
   };
 
   /* Interprets an ArrayBuffer as UTF-8 encoded string data. */
@@ -56,6 +60,10 @@
       this.connectionId = connectionInfo.connectionId;
       serial.onReceive.addListener(this.boundOnReceive);
       serial.onReceiveError.addListener(this.boundOnReceiveError);
+      // resend if it there was an error before
+      if (this.reconnectOnError && this.lastMessage) {
+        this.sendArrayBuffer(this.lastMessage);
+      }
     }
     this.onConnect.dispatch(ret);
   };
@@ -82,18 +90,38 @@
   };
 
   SerialConnection.prototype.connect = function(path, options = {}) {
+    this.path = path;
+    this.options = options;
     serial.connect(path, options, this.onConnectComplete.bind(this));
   };
 
   SerialConnection.prototype.onSend = function(sendInfo) {
     console.log("Send info for connectionId=" + this.connectionId.toString() + ":");
     console.log(sendInfo);
-  }
+    if (this.reconnectOnError && sendInfo.bytesSent != this.lastMessage.byteLength) {
+      // failure
+      this.lastMessage.slice(sendInfo.bytesSent);
+      this.resend();
+    } else {
+      // success
+      this.sendTries = 0;
+      this.lastMessage = undefined;
+    }
+  };
+
+  SerialConnection.prototype.resend = function() {
+    if(this.sendTries < MAX_SEND_TRIES) {
+      this.sendTries++;
+      this.connect(this.path, this.options);
+    }
+    else {
+      throw "Resend: max send tries exceeded."
+    }
+  };
 
   SerialConnection.prototype.sendString = function(msg) {
     try {
       this.sendArrayBuffer(this.strRaw2ab(msg));
-      //serial.send(this.connectionId, this.strRaw2ab(msg), this.boundOnSend);
     }
     catch(e) {
       throw(e);
@@ -103,6 +131,9 @@
   SerialConnection.prototype.sendArrayBuffer = function(msg) {
     if (this.connectionId < 0) {
       throw "Invalid connection";
+    }
+    if (this.reconnectOnError) {
+      this.lastMessage = msg;
     }
     serial.send(this.connectionId, msg, this.boundOnSend);
   };

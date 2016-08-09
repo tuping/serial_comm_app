@@ -52,7 +52,7 @@
             serialComm.initialize(request.devices, request.additionalPorts);
           }
           else if (request.start) {
-            serialComm.start(request.deviceId, request.deviceType, request.devicePath, request.deviceName, request.bitrate);
+            serialComm.start(request.deviceId, request.deviceType, request.devicePath, request.deviceName, request.bitrate, request.reconnectOnError);
           }
           else if (request.getDevices) {
             serialComm.getDevices();
@@ -121,33 +121,42 @@
     startDevices: function() {
       for (var d in serialComm.devices) {
         if (serialComm.devices[d].devicePath) {
-          serialComm.start(d, d.deviceType, d.devicePath, d.deviceName, d.bitrate);
+          serialComm.start(d, d.deviceType, d.devicePath, d.deviceName, d.bitrate, d.reconnectOnError);
         }
       }
     },
 
-    start: function(deviceId, deviceType, devicePath, deviceName, bitrate) {
+    start: function(deviceId, deviceType, devicePath, deviceName, bitrate, reconnectOnError) {
       serialComm.devices[deviceId] = {
         deviceType: deviceType,
         devicePath: devicePath,
         deviceName: deviceName,
-        bitrate: bitrate
+        bitrate: bitrate,
+        reconnectOnError: reconnectOnError
       };
 
-      //if (serialComm.connections[deviceId] == undefined) {
-        var lineTerminator;
-        switch (deviceType) {
-          case "arduino":
-            lineTerminator = "\n";
-            break;
-          case "scale":
-            lineTerminator = ETX;
-            break;
-          default:
-            lineTerminator = "\n";
+      // free any previous connections for this device
+      if (serialComm.connections[deviceId]) {
+        try {
+          serialComm.connections[deviceId].disconnect();
         }
-        serialComm.connections[deviceId] = new SerialConnection(deviceId, lineTerminator);
-      //}
+        catch(e) {}
+        serialComm.connections[deviceId] = undefined;
+      }
+
+      // new connection for this device
+      var lineTerminator;
+      switch (deviceType) {
+        case "arduino":
+          lineTerminator = "\n";
+          break;
+        case "scale":
+          lineTerminator = ETX;
+          break;
+        default:
+          lineTerminator = "\n";
+      }
+      serialComm.connections[deviceId] = new SerialConnection(deviceId, lineTerminator, reconnectOnError);
       serialComm.clientWantsLine[deviceId] = false;
 
       serialComm.connections[deviceId].onConnect.addListener(function(message) {
