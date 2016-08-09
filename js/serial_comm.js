@@ -119,9 +119,10 @@
     },
 
     startDevices: function() {
-      for (var d in serialComm.devices) {
-        if (serialComm.devices[d].devicePath) {
-          serialComm.start(d, d.deviceType, d.devicePath, d.deviceName, d.bitrate, d.reconnectOnError);
+      for (var deviceId in serialComm.devices) {
+        var d = serialComm.devices[deviceId];
+        if (d.devicePath) {
+          serialComm.start(deviceId, d.deviceType, d.devicePath, d.deviceName, d.bitrate, d.reconnectOnError);
         }
       }
     },
