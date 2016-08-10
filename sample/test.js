@@ -21,55 +21,64 @@ var myAdditionalPorts;
 
 var collectDataFromDom = function() {
   //get app id
-  appId = document.querySelector("[data-serial-comm-app-id]").dataset.serialCommAppId;
-
-  //get additional ports
-  myAdditionalPorts = document.querySelector("[data-serial-comm-additional-ports]").dataset.serialCommAdditionalPorts;
-
-  // set up hash with devices ids, disable all commands
-  var e = document.querySelectorAll("[data-serial-comm-id]");
-  for(var i = 0; i < e.length; ++i) {
-    myDevices[e[i].dataset.serialCommId]={
-      deviceType: e[i].dataset.serialCommType || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceType),
-      devicePath: e[i].dataset.serialCommPath || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].devicePath),
-      deviceName: e[i].dataset.serialCommName || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceName),
-      reconnectOnError: e[i].dataset.serialCommReconnectOnError || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].reconnectOnError)
-    }
-    e[i].disabled = true;
+  try {
+    appId = document.querySelector("[data-serial-comm-app-id]").dataset.serialCommAppId;
+  } catch(e) {
+    appId = undefined;
   }
+  if (appId) {
+    //get additional ports
+    try {
+      myAdditionalPorts = document.querySelector("[data-serial-comm-additional-ports]").dataset.serialCommAdditionalPorts;
+    } catch(e) {
+      myAdditionalPorts = [];
+    }
 
-  // add DOM event listeners
-  e = document.querySelectorAll("[data-serial-comm]");
-  for(var i = 0; i < e.length; ++i) {
-    switch(e[i].dataset.serialComm) {
-      case "commandTest":
-        e[i].addEventListener("click", function(event) {
-          showDeviceMessage(event.target.dataset.serialCommId,"");
-          is_on = !is_on;
-          myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: (is_on ? "y" : "n")});
-        });
-      break;
-      case "commandWeight":
-        e[i].addEventListener("click", function(event) {
-          showDeviceMessage(event.target.dataset.serialCommId,"");
-          myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, getWeight: true});
-        });
-      break;
-      case "commandPrint":
-        e[i].addEventListener("click", function(event) {
-          myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
-        });
+    // set up hash with devices ids, disable all commands
+    var e = document.querySelectorAll("[data-serial-comm-id]");
+    for(var i = 0; i < e.length; ++i) {
+      myDevices[e[i].dataset.serialCommId]={
+        deviceType: e[i].dataset.serialCommType || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceType),
+        devicePath: e[i].dataset.serialCommPath || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].devicePath),
+        deviceName: e[i].dataset.serialCommName || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].deviceName),
+        reconnectOnError: e[i].dataset.serialCommReconnectOnError || (myDevices[e[i].dataset.serialCommId] && myDevices[e[i].dataset.serialCommId].reconnectOnError)
+      }
+      e[i].disabled = true;
+    }
+
+    // add DOM event listeners
+    e = document.querySelectorAll("[data-serial-comm]");
+    for(var i = 0; i < e.length; ++i) {
+      switch(e[i].dataset.serialComm) {
+        case "commandTest":
+          e[i].addEventListener("click", function(event) {
+            showDeviceMessage(event.target.dataset.serialCommId,"");
+            is_on = !is_on;
+            myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: (is_on ? "y" : "n")});
+          });
         break;
-      case "configDevices":
-        e[i].addEventListener("click", function(event) {
-          configDevices();
-        });
-      break;
-      case "restartDevices":
-        e[i].addEventListener("click", function(event) {
-          restartDevices();
-        });
-      break;
+        case "commandWeight":
+          e[i].addEventListener("click", function(event) {
+            showDeviceMessage(event.target.dataset.serialCommId,"");
+            myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, getWeight: true});
+          });
+        break;
+        case "commandPrint":
+          e[i].addEventListener("click", function(event) {
+            myMessagesPort.postMessage({deviceId: event.target.dataset.serialCommId, message: document.getElementById(event.target.dataset.serialCommDatafieldId).value});
+          });
+          break;
+        case "configDevices":
+          e[i].addEventListener("click", function(event) {
+            configDevices();
+          });
+        break;
+        case "restartDevices":
+          e[i].addEventListener("click", function(event) {
+            restartDevices();
+          });
+        break;
+      }
     }
   }
 }
@@ -167,28 +176,30 @@ var log = function(msg) {
 
 var detect = function() {
   collectDataFromDom();
-  var message = {ping: true}
-  try {
-    myMessagesPort = chrome.runtime.connect(appId);
-    chrome.runtime.sendMessage(
-      appId,
-      message,
-      function(response) {
-        if (response) {
-          console.log(response);
-          detected = true;
-          addListeners();
-          initialize();
+  if (appId) {
+    var message = {ping: true}
+    try {
+      myMessagesPort = chrome.runtime.connect(appId);
+      chrome.runtime.sendMessage(
+        appId,
+        message,
+        function(response) {
+          if (response) {
+            console.log(response);
+            detected = true;
+            addListeners();
+            initialize();
+          }
+          else {
+            alert(messages.notFoundPleaseInstall);
+          }
         }
-        else {
-          alert(messages.notFoundPleaseInstall);
-        }
-      }
-    );
-    return true;
-  } catch(err) {
-    alert(messages.chromeApiNotAvaialable);
-    return false;
+      );
+      return true;
+    } catch(err) {
+      alert(messages.chromeApiNotAvaialable);
+      return false;
+    }
   }
 }
 
