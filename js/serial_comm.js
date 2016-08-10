@@ -92,7 +92,7 @@
     },
 
     initialize: function(devices, additionalPorts) {
-      serialComm.devices = {};
+      serialComm.devices = devices;
       if (additionalPorts) {
         try {
           var addPorts = JSON.parse("[" + additionalPorts + "]");
@@ -108,9 +108,9 @@
         function(item) {
           var stringfiedDevices = item[storageKey];
           if (stringfiedDevices) {
-            serialComm.devices = serialComm.mergeDeviceConfig(devices, JSON.parse(stringfiedDevices));
-            serialComm.startDevices();
+            serialComm.devices = serialComm.mergeDeviceConfig(serialComm.devices, JSON.parse(stringfiedDevices));
           }
+          serialComm.startDevices();
         }
       );
     },
