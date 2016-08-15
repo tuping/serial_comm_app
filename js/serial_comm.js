@@ -17,7 +17,7 @@
     bitrates: allowedBitrates,
     defaultBitrate: 9600,
     connections: {},
-    onConfigDevicesReturn: new chrome.Event(),
+    onGetDevicesReturn: new chrome.Event(),
 
     saveDevices: function() {
       var stringfiedDevices = JSON.stringify(serialComm.devices);
@@ -76,19 +76,18 @@
       serialComm.startDevices();
     },
 
-    configDevices: function(callback) {
+    configDevices: function() {
       for(var cwl in serialComm.clientWantsLine) {
         serialComm.clientWantsLine[cwl] = false;
       }
-      if(callback) {
-        if(!serialComm.onConfigDevicesReturn.hasListener(callback)) {
-          serialComm.onConfigDevicesReturn.addListener(callback);
-        }
-        chrome.serial.getDevices(serialComm.onConfigDevicesWithCallback);
+      chrome.serial.getDevices(serialComm.onGetDevices);
+    },
+
+    getDevices: function(callback) {
+      if(!serialComm.onGetDevicesReturn.hasListener(callback)) {
+        serialComm.onGetDevicesReturn.addListener(callback);
       }
-      else {
-        chrome.serial.getDevices(serialComm.onConfigDevices);
-      }
+      chrome.serial.getDevices(serialComm.onGetDevicesWithCallback);
     },
 
     initialize: function(devices, additionalPorts) {
@@ -136,6 +135,47 @@
       }
     },
 
+    handleOnConnect: function(deviceId, devicePath, message) {
+      if (message.success) {
+        serialComm.log(deviceId, chrome.i18n.getMessage("connectedTo") + devicePath, new Error);
+      }
+      else {
+        serialComm.log(deviceId, chrome.i18n.getMessage("errorOnConnect") + devicePath, new Error);
+      }
+      serialComm.myMessagesPort.postMessage({start: true, message: message, deviceId: deviceId});
+    },
+
+    handleOnReadLine: function(deviceId, line) {
+      serialComm.log(deviceId, chrome.i18n.getMessage("readLine") + line, new Error);
+      if (serialComm.clientWantsLine[deviceId]) {
+        serialComm.myMessagesPort.postMessage({deviceId: deviceId, readLine: true, message: line});
+      }
+    },
+
+    handleOnError: function(deviceId, error) {
+      serialComm.log(deviceId, chrome.i18n.getMessage("error") + error, new Error);
+      serialComm.myMessagesPort.postMessage({deviceId: deviceId, error: true, message: error});
+    },
+
+    stop: function(deviceId) {
+      var c = serialComm.connections[deviceId];
+      serialComm.clientWantsLine[deviceId] = false;
+      if (c.onConnect.hasListener(serialComm.handleOnConnect)) {
+        c.onConnect.removeListener(serialComm.handleOnConnect);
+      }
+      if (c.onReadLine.hasListener(serialComm.handleOnReadLine)) {
+        c.onReadLine.removeListener(serialComm.handleOnReadLine);
+      }
+      if (c.onError.hasListener(serialComm.handleOnError)) {
+        c.onError.removeListener(serialComm.handleOnError);
+      }
+
+      try {
+        c.disconnect();
+      }
+      catch(e) {}
+    },
+
     start: function(deviceId, deviceType, devicePath, deviceName, bitrate, reconnectOnError) {
       serialComm.devices[deviceId] = {
         deviceType: deviceType,
@@ -145,12 +185,9 @@
         reconnectOnError: reconnectOnError
       };
 
-      // free any previous connections for this device
+      // free any previous connections for this device and removes listeners
       if (serialComm.connections[deviceId]) {
-        try {
-          serialComm.connections[deviceId].disconnect();
-        }
-        catch(e) {}
+        serialComm.stop(deviceId);
         serialComm.connections[deviceId] = undefined;
       }
 
@@ -169,27 +206,10 @@
       serialComm.connections[deviceId] = new SerialConnection(deviceId, lineTerminator, reconnectOnError);
       serialComm.clientWantsLine[deviceId] = false;
 
-      serialComm.connections[deviceId].onConnect.addListener(function(message) {
-        if (message.success) {
-          serialComm.log(deviceId, chrome.i18n.getMessage("connectedTo") + devicePath, new Error);
-        }
-        else {
-          serialComm.log(deviceId, chrome.i18n.getMessage("errorOnConnect") + devicePath, new Error);
-        }
-        serialComm.myMessagesPort.postMessage({start: true, message: message, deviceId: deviceId});
-      });
-
-      serialComm.connections[deviceId].onReadLine.addListener(function(line) {
-        serialComm.log(deviceId, chrome.i18n.getMessage("readLine") + line, new Error);
-        if (serialComm.clientWantsLine[deviceId]) {
-          serialComm.myMessagesPort.postMessage({deviceId: deviceId, readLine: true, message: line});
-        }
-      });
-
-      serialComm.connections[deviceId].onError.addListener(function(error) {
-        serialComm.log(deviceId, chrome.i18n.getMessage("error") + error, new Error);
-        serialComm.myMessagesPort.postMessage({deviceId: deviceId, error: true, message: error});
-      });
+      var c = serialComm.connections[deviceId];
+      c.onConnect.addListener(serialComm.handleOnConnect);
+      c.onReadLine.addListener(serialComm.handleOnReadLine);
+      c.onError.addListener(serialComm.handleOnError);
 
       if (devicePath) {
         try {
@@ -201,14 +221,14 @@
       }
     },
 
-    onConfigDevices: function(devicePorts) {
+    onGetDevices: function(devicePorts) {
       serialComm.availablePorts = devicePorts.concat(serialComm.additionalPorts);
-      chooseDeviceWindow.show();
+      configDevicesWindow.show();
     },
 
-    onConfigDevicesWithCallback: function(devicePorts) {
+    onGetDevicesWithCallback: function(devicePorts) {
       serialComm.availablePorts = devicePorts.concat(serialComm.additionalPorts);
-      serialComm.onConfigDevicesReturn.dispatch();
+      serialComm.onGetDevicesReturn.dispatch();
     },
 
     setDevice: function(deviceId, devicePath, bitrate) {

@@ -6,7 +6,7 @@
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["js/serial_connection.js","js/serial_comm.js","js/choose_device_window.js","background.js"],
+      "scripts": ["js/serial_connection.js","js/serial_comm.js","js/config_devices_window.js","background.js"],
       "persistent": false
     }
   },

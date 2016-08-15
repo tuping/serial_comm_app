@@ -40,7 +40,7 @@ window.onload = function() {
   optionsForSelect(inputDevice, devices, {textField: "deviceName"});
   optionsForSelect(inputBitrate, bitrates, {default: defaultBitrate});
   buttonOk = document.getElementById("ok");
-  buttonOk.onclick = chooseDevice;
+  buttonOk.onclick = configDevice;
   buttonSave = document.getElementById("save");
   buttonSave.onclick = saveConfig;
   buttonOtherPortSave = document.getElementById("otherPortSave");
@@ -62,7 +62,7 @@ function loadPorts() {
   optionsForSelect(inputPort, ports, {textField: "path", valueField: "path"});
 }
 
-function chooseDevice() {
+function configDevice() {
   var deviceId = inputDevice.options[inputDevice.selectedIndex].value;
   var devicePath = inputPort.options[inputPort.selectedIndex].value;
   var deviceBitrate = inputBitrate.options[inputBitrate.selectedIndex].value;

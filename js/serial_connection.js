@@ -50,7 +50,7 @@
     return bytes.buffer;
   };
 
-  SerialConnection.prototype.onConnectComplete = function(connectionInfo) {
+  SerialConnection.prototype.onConnectComplete = function(devicePath, connectionInfo) {
     var ret = {success: true};
     if(chrome.runtime.lastError || !connectionInfo) {
       console.log("Connection failed.");
@@ -66,7 +66,7 @@
         this.sendArrayBuffer(this.lastMessage);
       }
     }
-    this.onConnect.dispatch(ret);
+    this.onConnect.dispatch(this.deviceId, devicePath, ret);
   };
 
   SerialConnection.prototype.onReceive = function(receiveInfo) {
@@ -79,21 +79,21 @@
     var index;
     while ((index = this.lineBuffer.indexOf("\n")) >= 0) {
       var line = this.lineBuffer.substr(0, index + 1);
-      this.onReadLine.dispatch(line);
+      this.onReadLine.dispatch(this.deviceId, line);
       this.lineBuffer = this.lineBuffer.substr(index + 1);
     }
   };
 
   SerialConnection.prototype.onReceiveError = function(errorInfo) {
     if (errorInfo.connectionId === this.connectionId) {
-      this.onError.dispatch(errorInfo.error);
+      this.onError.dispatch(this.deviceId, errorInfo.error);
     }
   };
 
   SerialConnection.prototype.connect = function(path, options = {}) {
     this.path = path;
     this.options = options;
-    serial.connect(path, options, this.onConnectComplete.bind(this));
+    serial.connect(path, options, this.onConnectComplete.bind(this, path));
   };
 
   SerialConnection.prototype.onSend = function(sendInfo) {
@@ -106,14 +106,14 @@
         this.resend();
       } else if (sendInfo.error) {
         //failure - generic
-        this.onError.dispatch(sendInfo);
+        this.onError.dispatch(this.deviceId, sendInfo);
       } else {
         // success
         this.sendTries = 0;
         this.lastMessage = undefined;
       }
     } else {
-      this.onError.dispatch({error: chrome.i18n.getMessage("invalidConnection")})
+      this.onError.dispatch(deviceId, {error: chrome.i18n.getMessage("invalidConnection")})
     }
   };
 
@@ -123,7 +123,7 @@
       this.connect(this.path, this.options);
     }
     else {
-      this.onError.dispatch({error: chrome.i18n.getMessage("resendMaxTriesExceeded")});
+      this.onError.dispatch(this.deviceId, {error: chrome.i18n.getMessage("resendMaxTriesExceeded")});
     }
   };
 
@@ -133,7 +133,7 @@
 
   SerialConnection.prototype.sendArrayBuffer = function(msg) {
     if (this.connectionId < 0) {
-      this.onError.dispatch(chrome.i18n.getMessage("invalidConnection"));
+      this.onError.dispatch(this.deviceId, chrome.i18n.getMessage("invalidConnection"));
     } else {
       if (this.reconnectOnError) {
         this.lastMessage = msg;
@@ -147,13 +147,13 @@
     if(chrome.runtime.lastError) {
       console.log("Disconnection failed.");
       console.log(chrome.runtime.lastError);
-      this.onError.dispatch(chrome.i18n.getMessage("invalidConnection"));
+      this.onError.dispatch(this.deviceId, chrome.i18n.getMessage("invalidConnection"));
     }
   };
 
   SerialConnection.prototype.disconnect = function() {
     if (this.connectionId < 0) {
-      this.onError.dispatch(chrome.i18n.getMessage("invalidConnection"));
+      this.onError.dispatch(this.deviceId, chrome.i18n.getMessage("invalidConnection"));
     } else {
       serial.disconnect(this.connectionId, boundOnDisconnectError);
     }

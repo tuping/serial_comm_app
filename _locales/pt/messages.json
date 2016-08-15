@@ -28,10 +28,10 @@
   "informPort": {
     "message": "Informe a porta do dispositivo"
    },
-  "chooseDeviceSettings": {
+  "configDeviceSettings": {
     "message": "Escolha as configurações do dispositivo"
    },
-  "chooseDevicesSettings": {
+  "configDevicesSettings": {
     "message": "Escolha as configurações dos dispositivos"
    },
   "choose": {

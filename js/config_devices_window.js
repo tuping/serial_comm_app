@@ -1,18 +1,18 @@
 (function(window, undefined) {
   "use strict";
 
-  var chooseDeviceWindow = new function() {
+  var configDevicesWindow = new function() {
     this.width = 550;
     this.height = 500;
     this.w = (this.width > screen.width) ? screen.with : this.width;
     this.h = (this.height > screen.widh) ? screen.with : this.height;
     this.show = function() {
 
-      var win = chrome.app.window.get("chooseDeviceId");
+      var win = chrome.app.window.get("configDevicesWinId");
       if (win == null) {
         chrome.app.window.create(
-          "/html/choose_device.html", {
-            id: "chooseDeviceId",
+          "/html/config_devices.html", {
+            id: "configDevicesWinId",
             hidden: true,
             alwaysOnTop: true,
             outerBounds: {
@@ -59,5 +59,5 @@
       }
     }
   }
-  window.chooseDeviceWindow = chooseDeviceWindow;
+  window.configDevicesWindow = configDevicesWindow;
 })(window);
