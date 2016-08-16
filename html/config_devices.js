@@ -12,26 +12,11 @@ var buttonSave;
 var buttonOtherPortSave;
 var buttonRefreshPorts;
 var dataSet;
+var table;
 
 window.onload = function() {
   reloadDataSet();
-  $("#dtDevices").DataTable({
-    data: dataSet,
-    columns: [
-      { title: chrome.i18n.getMessage("device"), defaultContent: "" },
-      { title: chrome.i18n.getMessage("port"), defaultContent: "" },
-      { title: chrome.i18n.getMessage("bitrate"), defaultContent: "" }
-    ],
-    "scrollY": "200px",
-    "scrollCollapse": true,
-    "paging": false,
-    "searching": false,
-    "info": false,
-    language: {
-      "emptyTable": chrome.i18n.getMessage("emptyTable"),
-      "zeroRecords": chrome.i18n.getMessage("emptyTable")
-    }
-  });
+  setUpDataTable();
   loadPorts();
   bitrates = serialCommBitrates().bitrates;
   defaultBitrate = serialCommBitrates().defaultBitrate;
@@ -77,14 +62,19 @@ function saveConfig() {
 
 function showCurrentDevices() {
   reloadDataSet();
-  $("#dtDevices").DataTable().clear().rows.add(dataSet).draw();
+  table.clear().rows.add(dataSet).draw();
 }
 
 function reloadDataSet() {
   devices = serialCommDevices();
   dataSet = $.map(devices, function(value, index) {
     if(value.devicePath) {
-      return [[value.deviceName ? value.deviceName : index, value.devicePath, value.bitrate]];
+      return [{
+        "0": value.deviceName ? value.deviceName : index,
+        "1": value.devicePath,
+        "2": value.bitrate,
+        "DT_RowId": index
+      }];
     }
   });
 }
@@ -126,4 +116,45 @@ function optionsForSelect(select, values, options = {}) {
     opt.innerHTML = chrome.i18n.getMessage("notAvaialable");
     select.appendChild(opt);
   }
+}
+
+function setUpDataTable() {
+  $("#dtDevices").DataTable({
+    data: dataSet,
+    columns: [
+      { title: chrome.i18n.getMessage("device"), defaultContent: "" },
+      { title: chrome.i18n.getMessage("port"), defaultContent: "" },
+      { title: chrome.i18n.getMessage("bitrate"), defaultContent: "" },
+      { title: ""}
+    ],
+    "scrollY": "200px",
+    "scrollCollapse": true,
+    "paging": false,
+    "searching": false,
+    "info": false,
+    language: {
+      "emptyTable": chrome.i18n.getMessage("emptyTable"),
+      "zeroRecords": chrome.i18n.getMessage("emptyTable")
+    }
+  });
+  table = $("#dtDevices").DataTable();
+
+  //click table
+  $("#dtDevices tbody").on("click", "td", function () {
+    var data = table.cell(this).data();  //td element data
+    var column = table.cell(this).index().column; //column index
+    var row = table.row(this).index(); // Row index
+    var rowid = $(this).closest("tr").attr("id"); //Get Row Id
+    var columnvisible = table.cell( this ).index().columnVisible //visble column index
+    console.log(data);
+    console.log(row);
+  });
+
+  //click on delete
+  $("#dtDevices tbody").on("click", "img.icon-delete", function () {
+    table
+    .row( $(this).parents('tr') )
+    .remove()
+    .draw();
+  });
 }

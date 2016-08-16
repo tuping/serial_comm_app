@@ -73,6 +73,11 @@ var collectDataFromDom = function() {
             configDevices();
           });
         break;
+        case "clearDevices":
+          e[i].addEventListener("click", function(event) {
+            clearDevices();
+          });
+        break;
         case "restartDevices":
           e[i].addEventListener("click", function(event) {
             restartDevices();
@@ -227,6 +232,15 @@ var restartDevices = function() {
 var configDevices = function() {
   try {
     myMessagesPort.postMessage({configDevices: true});
+  }
+  catch (e) {
+    detect(appId);
+  }
+}
+
+var clearDevices = function() {
+  try {
+    myMessagesPort.postMessage({clearDevices: true});
   }
   catch (e) {
     detect(appId);

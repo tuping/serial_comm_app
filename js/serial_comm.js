@@ -59,6 +59,9 @@
           else if (request.configDevices) {
             serialComm.configDevices();
           }
+          else if (request.clearDevices) {
+            serialComm.clearDevices();
+          }
           else if (request.restartDevices) {
             serialComm.restartDevices();
           }
@@ -81,6 +84,10 @@
         serialComm.clientWantsLine[cwl] = false;
       }
       chrome.serial.getDevices(serialComm.onGetDevices);
+    },
+
+    clearDevices: function() {
+      chrome.storage.local.clear();
     },
 
     getDevices: function(callback) {
