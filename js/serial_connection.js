@@ -53,8 +53,8 @@
   SerialConnection.prototype.onConnectComplete = function(devicePath, connectionInfo) {
     var ret = {success: true};
     if(chrome.runtime.lastError || !connectionInfo) {
-      console.log("Connection failed.");
-      console.log(chrome.runtime.lastError);
+      //console.log("Connection failed.");
+      //console.log(chrome.runtime.lastError);
       ret = {error: true};
     }
     else {
@@ -97,8 +97,8 @@
   };
 
   SerialConnection.prototype.onSend = function(sendInfo) {
-    console.log("Send info for connectionId=" + this.connectionId.toString() + ":");
-    console.log(sendInfo);
+    //console.log("Send info for connectionId=" + this.connectionId.toString() + ":");
+    //console.log(sendInfo);
     if (sendInfo) {
       if (this.reconnectOnError && sendInfo.bytesSent != this.lastMessage.byteLength) {
         // failure - retry
@@ -145,8 +145,8 @@
 
   SerialConnection.prototype.onDisconnectError = function() {
     if(chrome.runtime.lastError) {
-      console.log("Disconnection failed.");
-      console.log(chrome.runtime.lastError);
+      //console.log("Disconnection failed.");
+      //console.log(chrome.runtime.lastError);
       this.onError.dispatch(this.deviceId, chrome.i18n.getMessage("invalidConnection"));
     }
   };

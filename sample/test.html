@@ -15,21 +15,33 @@
       data-serial-comm-type="arduino"
       data-serial-comm-path=""
       data-serial-comm-name="Arduino UNO"
-      data-serial-comm-disable-on-error="true"
+      data-serial-comm-reconnect-on-error
     >Test</button>
+    <textarea data-serial-comm="result" data-serial-comm-id="arduino1"></textarea>
     <button
       data-serial-comm="commandWeight"
       data-serial-comm-id="scale1"
       data-serial-comm-type="scale"
-      data-serial-comm-reconnect-on-error="true"
+      data-serial-comm-reconnect-on-error
     >Weight</button>
     <textarea
       data-serial-comm="result"
       data-serial-comm-id="scale1"
-      data-serial-comm-display-error="true"
-      data-serial-comm-disable-on-error="true"
+      data-serial-comm-display-error
+      data-serial-comm-disable-on-error
     ></textarea>
-    <textarea data-serial-comm="result" data-serial-comm-id="arduino1"></textarea>
+    <button
+      data-serial-comm="commandWeight"
+      data-serial-comm-id="scale2"
+      data-serial-comm-type="scale"
+      data-serial-comm-reconnect-on-error
+    >Weight</button>
+    <textarea
+      data-serial-comm="result"
+      data-serial-comm-id="scale2"
+      data-serial-comm-display-error
+      data-serial-comm-disable-on-error
+    ></textarea>
     <div id="buffer">
     </div><br/>
     <textarea id="printerdata" style="width: 300px; height: 150px;">
@@ -104,8 +116,8 @@ Y96,N,8,1
       data-serial-comm-id="zplprinter"
       data-serial-comm-type="printer"
       data-serial-comm-datafield-id="printerzebra"
-      data-serial-comm-reconnect-on-error="true"
-      data-serial-comm-disable-on-error="true"
+      data-serial-comm-reconnect-on-error
+      data-serial-comm-disable-on-error
     >ZPL Printer
     </button>
   </body>

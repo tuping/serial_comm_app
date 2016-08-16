@@ -22,6 +22,9 @@
               minHeight: this.h,
               maxWidth: this.w,
               maxHeight: this.h
+            },
+            frame: {
+              type: "none"
             }
           },
           function(win) {
@@ -51,11 +54,13 @@
               Math.round((screen.availHeight - win.outerBounds.height)/2) // top
             );
             win.show();
+            win.drawAttention();
           }
         );
       }
       else {
         win.show();
+        win.drawAttention();
       }
     }
   }

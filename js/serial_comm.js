@@ -5,8 +5,8 @@
   const STX = 0x02;
   const ETX = 0x03;
   const allowedBitrates = [110, 300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200];
-  const logOn = true;
-  const storageKey = "serial-comm-devices"
+  const logOn = false; // show logs messagens
+  const storageKey = "serial-comm-devices";
 
   var serialComm = {
     myMessagesPort: undefined,
