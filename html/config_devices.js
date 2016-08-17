@@ -1,5 +1,6 @@
 "use strict";
 
+var buttonCloseWin;
 var devices;
 var ports;
 var bitrates;
@@ -13,6 +14,12 @@ var buttonOtherPortSave;
 var buttonRefreshPorts;
 var dataSet;
 var table;
+var fixedRow = {
+  "0": "",
+  "1": "",
+  "2": "",
+  "DT_RowId": "addDevice"
+};
 
 window.onload = function() {
   reloadDataSet();
@@ -32,12 +39,24 @@ window.onload = function() {
   buttonOtherPortSave.onclick = informOtherPort;
   buttonRefreshPorts = document.getElementById("refreshPorts");
   buttonRefreshPorts.onclick = refreshPorts;
+  buttonCloseWin = document.getElementById("btnCloseWin")
+  buttonCloseWin.onclick = closeWindow;
   i18n.translate();
+  blursLinkButtons();
   showCurrentDevices();
 }
 
+function blursLinkButtons() {
+  var e = document.querySelectorAll(".btn-link");
+  for (var i = 0; i < e.length; ++i) {
+    e[i].addEventListener("click", function(e) {
+      this.blur();
+    });
+  }
+}
+
 function refreshPorts() {
-  buttonRefreshPorts.blur();
+  //buttonRefreshPorts.blur();
   getDevices(loadPorts);
 }
 
@@ -60,9 +79,14 @@ function saveConfig() {
   window.close();
 }
 
+function closeWindow() {
+  window.close();
+}
+
 function showCurrentDevices() {
   reloadDataSet();
   table.clear().rows.add(dataSet).draw();
+  table.row.add(fixedRow);
 }
 
 function reloadDataSet() {

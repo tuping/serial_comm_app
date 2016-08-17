@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
     <title data-i18n="configuredDevices">---</title>
 
     <!-- Bootstrap -->
@@ -12,45 +13,56 @@
     <!-- Datatables -->
     <link rel="stylesheet" type="text/css" href="/assets/datatables/DataTables-1.10.12/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/assets/datatables/FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css"/>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/full-height.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/center-modal.css"/>
 
   </head>
   <body>
-    <form>
-      <div class="col-xs-10 col-xs-offset-1">
-        <h4 class="text-center" data-i18n="configuredDevices">---</h4>
+    <div class="panel panel-primary full-height square-border">
+      <div id="panel-head" class="panel-heading square-border" style="-webkit-app-region: drag;">
+        <img src="/img/icon-rect-small-white.png"><span style="margin-left: 10px;" data-i18n="appName">---</span>
+        <button id="btnCloseWin" type="button" class="close" style="-webkit-app-region: no-drag;">
+          <span>&times;</span>
+        </button>
       </div>
-      <div class="col-xs-10 col-xs-offset-1">
-        <!-- Datatable -->
-        <table id="dtDevices" class="table table-condensed table-hover table-bordered" cellspacing="0" width="100%">
-        </table>
+      <div class="panel-body square-border">
+        <form>
+          <div class="col-xs-10 col-xs-offset-1">
+            <h4 class="text-center" data-i18n="configuredDevices">---</h4>
+          </div>
+          <div class="col-xs-10 col-xs-offset-1">
+            <!-- Datatable -->
+            <table id="dtDevices" class="table table-condensed table-hover table-bordered" cellspacing="0" width="100%">
+            </table>
+          </div>
+          <!-- buttons -->
+          <div class="form-group">
+            <div class="col-xs-4 col-xs-offset-2" text-align="center">
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDeviceModal">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="col-xs-4" text-align="center">
+              <button type="button" class="btn btn-primary btn-block" id="save" data-i18n="confirm">--</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <!-- buttons -->
-      <div class="form-group">
-        <div class="col-xs-4 col-xs-offset-2" text-align="center">
-          <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDeviceModal">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-          </button>
-        </div>
-        <div class="col-xs-4" text-align="center">
-          <button type="button" class="btn btn-primary btn-block" id="save" data-i18n="confirm">--</button>
-        </div>
-      </div>
-    </form>
+    </div>
+
     <!-- Modal config device -->
     <div class="modal fade" id="addDeviceModal" tabindex="-1" role="dialog" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-wide" role="document">
         <div class="modal-content">
           <div class="modal-header">
-          <!--
+            <!--
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-          -->
-              <button id="refreshPorts" type="button" class="btn btn-link pull-right">
-                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              </button>
-              <h4 class="modal-title" id="addDeviceModalLabel" data-i18n="configDeviceSettings">---</h4>
+            -->
+            <h4 class="modal-title" id="addDeviceModalLabel" data-i18n="configDeviceSettings">---</h4>
           </div>
           <div class="modal-body">
             <form class="form-horizontal">
@@ -64,16 +76,21 @@
               </div>
               <div class="form-group">
                 <label for="port" class="col-xs-2 col-xs-offset-1 control-label" data-i18n="port" data-i18n-sufix=": ">---</label>
-                <div class="col-xs-6">
-                  <select class="form-control" id="port">
-                    <option>---</option>
-                  </select>
-                </div>
-                <div class="col-xs-2">
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#otherPortModal">
-                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                  </button>
+                <div class="col-xs-8">
+                  <div class="input-group">
+                    <select class="form-control" id="port">
+                      <option>---</option>
+                    </select>
+                    <span class="input-group-btn">
+                      <button id="refreshPorts" type="button" class="btn btn-link btn-xs">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                      </button>
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn btn-link btn-xs" data-toggle="modal" data-target="#otherPortModal">
+                        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                      </button>
+                    </span>
+                  </div>
                 </div>
               </div>
               <div class="form-group">
@@ -100,9 +117,11 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
+            <!--
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
+            -->
             <h4 class="modal-title" id="otherPortModalLabel" data-i18n="informPort">---</h4>
           </div>
           <div class="modal-body">
@@ -116,7 +135,6 @@
       </div>
     </div>
     <!-- End modal add port -->
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/assets/bootstrap/js/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
