@@ -75,5 +75,8 @@
   },
   "resendMaxTriesExceeded" : {
     "message": "Resend: máximo de tentativas excedido."
+  },
+  "clickToIdentifyNewPorts" :{
+    "message": "Clique para identificar novas portas"
   }
 }

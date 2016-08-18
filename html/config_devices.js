@@ -42,12 +42,13 @@ window.onload = function() {
   buttonCloseWin = document.getElementById("btnCloseWin")
   buttonCloseWin.onclick = closeWindow;
   i18n.translate();
-  blursLinkButtons();
+  blursButtons();
   showCurrentDevices();
 }
 
-function blursLinkButtons() {
-  var e = document.querySelectorAll(".btn-link");
+function blursButtons() {
+  // on self clicking
+  var e = document.querySelectorAll("button");
   for (var i = 0; i < e.length; ++i) {
     e[i].addEventListener("click", function(e) {
       this.blur();
@@ -149,7 +150,12 @@ function setUpDataTable() {
       { title: chrome.i18n.getMessage("device"), defaultContent: "" },
       { title: chrome.i18n.getMessage("port"), defaultContent: "" },
       { title: chrome.i18n.getMessage("bitrate"), defaultContent: "" },
-      { title: ""}
+      {
+        "className":      'delete-control',
+        "orderable":      false,
+        "data":           null,
+        "defaultContent": ''
+      }
     ],
     "scrollY": "200px",
     "scrollCollapse": true,

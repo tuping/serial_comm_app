@@ -10,6 +10,13 @@
           chrome.i18n.getMessage(e[i].dataset.i18n) +
           (e[i].dataset.i18nSufix || "");
       }
+      e = document.querySelectorAll("[data-i18n-title]");
+      for (var i = 0; i < e.length; ++i) {
+        e[i].title =
+          (e[i].dataset.i18nPrefix || "") +
+          chrome.i18n.getMessage(e[i].dataset.i18nTitle) +
+          (e[i].dataset.i18nSufix || "");
+      }
     }
   }
 

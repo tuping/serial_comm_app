@@ -14,8 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/datatables/DataTables-1.10.12/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/assets/datatables/FixedHeader-3.1.2/css/fixedHeader.bootstrap.min.css"/>
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/assets/css/full-height.css"/>
-    <link rel="stylesheet" type="text/css" href="/assets/css/center-modal.css"/>
+    <link rel="stylesheet" type="text/css" href="config_devices.css"/>
 
   </head>
   <body>
@@ -82,11 +81,16 @@
                       <option>---</option>
                     </select>
                     <span class="input-group-btn">
-                      <button id="refreshPorts" type="button" class="btn btn-link btn-xs">
+                      <button
+                        id="refreshPorts"
+                        type="button"
+                        class="btn btn-link btn-xs"
+                        data-toggle="tooltip" data-i18n-title="clickToIdentifyNewPorts" title="---"
+                      >
                         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                       </button>
                       <!-- Button trigger modal -->
-                      <button type="button" class="btn btn-link btn-xs" data-toggle="modal" data-target="#otherPortModal">
+                      <button type="button" class="btn btn-link btn-xs remove-highlight-focus" data-toggle="modal" data-target="#otherPortModal">
                         <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
                       </button>
                     </span>

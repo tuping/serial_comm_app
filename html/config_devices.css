@@ -1,0 +1,48 @@
+/* custom modal settings */
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.modal-wide {
+  width: 90%!important;
+}
+
+/* custom page settings */
+html, body {
+  height: 100%;
+}
+
+.full-height {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: block;
+}
+
+.square-border {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* remove highlight focus */
+.remove-highlight-focus:focus {
+   outline: none !important;
+}
+
+/* datable settings */
