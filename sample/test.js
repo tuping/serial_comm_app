@@ -96,11 +96,11 @@ var initialize = function() {
   });
 }
 
-var disableSerialInterface = function(deviceId) {
+var disableSerialInterface = function(deviceId, options) {
   var e = document.querySelectorAll("[data-serial-comm-id=" + deviceId + "]");
   for(var i = 0; i < e.length; ++i) {
     //check for disable on error
-    if(e[i].dataset.serialCommDisableOnError) {
+    if(e[i].dataset.serialCommDisableOnError || (options && options.force)) {
       e[i].disabled = true;
     }
     //check for display error
@@ -155,6 +155,9 @@ var processMessages = function(request) {
   }
   else if (request.error) {
     disableSerialInterface(request.deviceId);
+  }
+  else if (request.deviceUnset) {
+    disableSerialInterface(request.deviceId, {force: true});
   }
 }
 

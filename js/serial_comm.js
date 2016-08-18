@@ -251,6 +251,17 @@
       });
     },
 
+    unsetDevice: function(deviceId) {
+      serialComm.stop(deviceId);
+      var obj = serialComm.devices[deviceId];
+      obj = {deviceType: obj.deviceType, devicePath: undefined, deviceName: obj.deviceName, bitrate: undefined};
+      serialComm.devices[deviceId] = obj;
+      serialComm.myMessagesPort.postMessage({
+        deviceId: deviceId,
+        deviceUnset: true
+      });
+    },
+
     getWeight: function(deviceId) {
       serialComm.sendByte(deviceId, ENQ);
     }

@@ -46,3 +46,18 @@ html, body {
 }
 
 /* datable settings */
+td.delete-control {
+  /*height:40px;*/
+  border:1px solid #555;
+  /*width:50%;*/
+  /*margin:30px;*/
+}
+
+td.delete-control:before {
+  font-family:"Glyphicons Halflings";
+  line-height:1;
+  margin:0px;
+  display:inline-block;
+  /*.glyphicon-trash:before */
+  content: "\e020";
+}

@@ -147,14 +147,15 @@ function setUpDataTable() {
   $("#dtDevices").DataTable({
     data: dataSet,
     columns: [
-      { title: chrome.i18n.getMessage("device"), defaultContent: "" },
-      { title: chrome.i18n.getMessage("port"), defaultContent: "" },
-      { title: chrome.i18n.getMessage("bitrate"), defaultContent: "" },
+      { title: chrome.i18n.getMessage("device"), defaultContent: "", className: "select-control" },
+      { title: chrome.i18n.getMessage("port"), defaultContent: "", className: "select-control" },
+      { title: chrome.i18n.getMessage("bitrate"), defaultContent: "", className: "select-control" },
       {
-        "className":      'delete-control',
-        "orderable":      false,
-        "data":           null,
-        "defaultContent": ''
+        className: "delete-control",
+        orderable: false,
+        data: null,
+        defaultContent: "",
+        title: ""
       }
     ],
     "scrollY": "200px",
@@ -169,22 +170,24 @@ function setUpDataTable() {
   });
   table = $("#dtDevices").DataTable();
 
-  //click table
-  $("#dtDevices tbody").on("click", "td", function () {
+  //click on table row
+  $("#dtDevices tbody").on("click", "td.select-control", function () {
     var data = table.cell(this).data();  //td element data
     var column = table.cell(this).index().column; //column index
     var row = table.row(this).index(); // Row index
     var rowid = $(this).closest("tr").attr("id"); //Get Row Id
     var columnvisible = table.cell( this ).index().columnVisible //visble column index
+    console.log("--->");
     console.log(data);
     console.log(row);
+    console.log(rowid);
+    console.log("<---");
   });
 
-  //click on delete
-  $("#dtDevices tbody").on("click", "img.icon-delete", function () {
-    table
-    .row( $(this).parents('tr') )
-    .remove()
-    .draw();
+  //click on table "td" delete
+  $("#dtDevices tbody").on("click", "td.delete-control", function () {
+    var rowid = $(this).closest("tr").attr("id"); //Get Row Id
+    unsetDevice(rowid);
+    showCurrentDevices();
   });
 }
